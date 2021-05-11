@@ -8,6 +8,7 @@ output: pdf_document
 ```{r setup, include=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(olsrr)
 ```
 
 ```{r, message=FALSE}
@@ -29,6 +30,10 @@ lm.reduced <- lm(bmi2 ~ age + hypertension + heart_disease + ever_married +
     work_type + avg_glucose_level + smoking_status + stroke, data = Stroke)
 
 summary(lm.reduced)
+
+plot(lm.reduced, which=4)
+
+ols_plot_resid_lev(lm.reduced)
 ```
 
 
