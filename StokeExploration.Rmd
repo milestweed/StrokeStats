@@ -1,0 +1,46 @@
+---
+title: "Stoke Data"
+author: "Miles Tweed"
+date: "5/11/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+```{r, message=FALSE}
+Stroke <- read_csv('../../Data/healthcare-dataset-stroke-data.csv')
+Stroke$bmi <- Stroke$bmi %>% as.numeric()
+Stroke <- Stroke %>% mutate(bmi2 = ifelse(is.na(bmi), median(bmi, na.rm = TRUE), bmi)) %>% select(-bmi)
+```
+
+
+# Expectation 3
+```{r}
+lm.obj <- lm(bmi2~., Stroke)
+
+summary(lm.obj)
+
+step(lm.obj, trace = 0)
+
+lm.reduced <- lm(bmi2 ~ age + hypertension + heart_disease + ever_married + 
+    work_type + avg_glucose_level + smoking_status + stroke, data = Stroke)
+
+summary(lm.reduced)
+```
+
+
+# Expectation 6
+```{r}
+glm.obj <- glm(stroke~., Stroke, family='binomial')
+
+summary(glm.obj)
+
+step(glm.obj, trace = 0)
+
+glm.reduced <- glm(stroke ~ age + hypertension + heart_disease + avg_glucose_level, data = Stroke, family = 'binomial')
+
+summary(glm.reduced)
+```
