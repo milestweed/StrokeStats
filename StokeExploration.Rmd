@@ -40,16 +40,20 @@ ggplot(Stroke, aes(x = gender, fill =  gender)) +
   labs(title = "Gender Distribution")
 
 ggplot(Stroke, aes(x = work_type, fill =  gender)) + 
-  geom_bar(position = 'dodge')
+  geom_bar(position = 'dodge') +
+  labs(title = "Work Type by Gender")
 
 ggplot(Stroke, aes(x = Residence_type, fill =  gender)) + 
-  geom_bar(position = 'dodge')
+  geom_bar(position = 'dodge') +
+  labs(title = "Residence Type by Gender")
 
 ggplot(Stroke, aes(x = smoking_status, fill =  gender)) + 
-  geom_bar(position = 'dodge')
+  geom_bar(position = 'dodge') +
+  labs(title = "Past Smoking Status by Gender")
 
 ggplot(Stroke, aes(x = ever_married, fill =  gender)) + 
-  geom_bar(position = 'dodge')
+  geom_bar(position = 'dodge') +
+  labs(title = "Marriage Status by Gender")
 ```
 
 
