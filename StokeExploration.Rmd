@@ -12,7 +12,7 @@ library(olsrr)
 ```
 
 ```{r, message=FALSE}
-Stroke <- read_csv('../../../Data/healthcare-dataset-stroke-data.csv')
+Stroke <- read_csv('healthcare-dataset-stroke-data.csv')
 Stroke$bmi <- Stroke$bmi %>% as.numeric()
 Stroke <- Stroke %>% mutate(bmi2 = ifelse(is.na(bmi), median(bmi, na.rm = TRUE), bmi)) %>% select(-bmi)
 ```
@@ -38,7 +38,6 @@ abline(v = 599.05, col='red')
 ```
 
 
-
 # Expectation 3
 ```{r}
 lm.obj <- lm(bmi2~., Stroke)
@@ -55,6 +54,13 @@ summary(lm.reduced)
 plot(lm.reduced, which=4)
 
 ols_plot_resid_lev(lm.reduced)
+```
+
+
+# Expectation 4
+```{r}
+plot(lm.reduced,which=1)
+plot(lm.reduced,which=2)
 ```
 
 
