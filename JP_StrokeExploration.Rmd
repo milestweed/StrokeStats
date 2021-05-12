@@ -56,8 +56,8 @@ require(car)
 
 vif(lm.reduced)
 
-################################################
-
+############## CONFIDENCE INTERVALS ################
+confint(lm.reduced, type="c")[-1,]
 
 ``` 
 
@@ -120,14 +120,60 @@ $$
 
 
 # Expectation 6
+
+  Check For Model Significance:
+  
 ```{r}
 glm.obj <- glm(stroke~., Stroke, family='binomial')
 
 summary(glm.obj)
 
-step(glm.obj, trace = 0)
+# summary(step(glm.obj, trace = 0))
 
-glm.reduced <- glm(stroke ~ age + hypertension + heart_disease + avg_glucose_level, data = Stroke, family = 'binomial')
+# glm.reduced <- glm(stroke ~ age + hypertension + heart_disease + avg_glucose_level, data = Stroke, family = 'binomial')
+
+# summary(glm.reduced)
+```
+
+</br>
+
+Forward Stepwise Selection w/ AIC Selection Criterion:
+
+```{r}
+glm.obj <- glm(stroke~., Stroke, family='binomial')
+
+glm.reduced <- step(glm.obj, trace = 0)
 
 summary(glm.reduced)
+
+confint(glm.reduced, type="c")
 ```
+
+</br>
+
+
+
+</br>
+Full Binary Logistic Regression Model Equation:
+$$
+Y_i \sim _{indep.} Bin(1,p_i)
+\\
+log(\frac{p_i}{1-p_i}) = 
+$$
+
+
+Fitted Model Equation: 
+
+$$
+log(\frac{p_i}{1-p_i})= 
+$$
+
+
+
+
+
+
+
+
+
+
