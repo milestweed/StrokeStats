@@ -35,6 +35,7 @@ pchisq(599.05, df=3, lower.tail=F)
 curve(dchisq(x, df = 3), from = 0, to = 20, main = "Chi-Squared Distribution with df=3")
 curve(dchisq(x, df = 3), from = 0, to = 600, main = "Location of Test Statistic")
 abline(v = 599.05, col='red')
+text(x=530, y = 0.03, labels = "Chi-Squared Statistic", col = 'red', cex = 0.7)
 ```
 
 
