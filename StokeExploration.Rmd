@@ -26,7 +26,14 @@ Stroke2 <- Stroke2 %>% select(-stroke,-hypertension,-heart_disease)
 
 pairs(Stroke2)
 
-ggplot(Stroke,aes(x=bmi2, y=avg_glucose_level, col = factor(stroke))) + geom_point()
+#Stroke$stroke<-as.character(Stroke$stroke)
+#strokev<-c("0"="red", "1"="green")
+
+ggplot(Stroke,aes(x=bmi2, y=avg_glucose_level, colour = factor(stroke))) +
+  geom_point(alpha=.5) +
+  labs(x="BMI", y="Average Glucose Level", title="BMI vs. Glucose Level") +
+  #scale_fill_manual(values=strokev) +
+  scale_color_discrete(name="Stroke", labels=c("No","Yes"))
 
 ggplot(Stroke, aes(x = gender, fill =  gender)) + 
   geom_bar(position = 'dodge') +
