@@ -8,14 +8,34 @@ output: pdf_document
 ```{r setup, include=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
-library(olsrr)
 ```
 
 ```{r, message=FALSE}
 Stroke <- read_csv('healthcare-dataset-stroke-data.csv')
 Stroke$bmi <- Stroke$bmi %>% as.numeric()
-Stroke <- Stroke %>% mutate(bmi2 = ifelse(is.na(bmi), median(bmi, na.rm = TRUE), bmi)) %>% select(-bmi)
+Stroke <- Stroke %>% mutate(bmi2 = ifelse(is.na(bmi), median(bmi, na.rm = TRUE), bmi)) %>% select(-bmi, -id) %>% filter(gender!="Other")
 ```
+
+# Expectation 1
+
+```{r}
+ggplot(Stroke, aes(x = gender, fill =  gender)) + 
+  geom_bar(position = 'dodge') +
+  labs(title = "Gender Distribution")
+
+ggplot(Stroke, aes(x = work_type, fill =  gender)) + 
+  geom_bar(position = 'dodge')
+
+ggplot(Stroke, aes(x = Residence_type, fill =  gender)) + 
+  geom_bar(position = 'dodge')
+
+ggplot(Stroke, aes(x = smoking_status, fill =  gender)) + 
+  geom_bar(position = 'dodge')
+
+ggplot(Stroke, aes(x = ever_married, fill =  gender)) + 
+  geom_bar(position = 'dodge')
+```
+
 
 # Expectation 2
 ```{r}
@@ -30,13 +50,14 @@ con.table <- table(Stroke$ever_married, Stroke$smoking_status)
 chisq.test(con.table)
 
 # Probability that marriage and smoking status are independent
-pchisq(599.05, df=3, lower.tail=F)
+pchisq(600.33, df=3, lower.tail=F)
 
 curve(dchisq(x, df = 3), from = 0, to = 20, main = "Chi-Squared Distribution with df=3")
-curve(dchisq(x, df = 3), from = 0, to = 600, main = "Location of Test Statistic")
-abline(v = 599.05, col='red')
+curve(dchisq(x, df = 3), from = 0, to = 601, main = "Location of Test Statistic")
+abline(v = 600.33, col='red')
 text(x=530, y = 0.03, labels = "Chi-Squared Statistic", col = 'red', cex = 0.7)
 ```
+
 
 
 # Expectation 3
@@ -51,10 +72,6 @@ lm.reduced <- lm(bmi2 ~ age + hypertension + heart_disease + ever_married +
     work_type + avg_glucose_level + smoking_status + stroke, data = Stroke)
 
 summary(lm.reduced)
-
-plot(lm.reduced, which=4)
-
-ols_plot_resid_lev(lm.reduced)
 ```
 
 
@@ -62,6 +79,15 @@ ols_plot_resid_lev(lm.reduced)
 ```{r}
 plot(lm.reduced,which=1)
 plot(lm.reduced,which=2)
+```
+
+# Expectation 5
+
+```{r}
+plot(lm.reduced, which=4)
+
+lm.outliers <- lm(bmi2~age + hypertension + heart_disease + ever_married + 
+    work_type + avg_glucose_level + smoking_status + stroke, data = Stroke)
 ```
 
 
