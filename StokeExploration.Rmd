@@ -12,10 +12,31 @@ library(olsrr)
 ```
 
 ```{r, message=FALSE}
-Stroke <- read_csv('../../Data/healthcare-dataset-stroke-data.csv')
+Stroke <- read_csv('../../../Data/healthcare-dataset-stroke-data.csv')
 Stroke$bmi <- Stroke$bmi %>% as.numeric()
 Stroke <- Stroke %>% mutate(bmi2 = ifelse(is.na(bmi), median(bmi, na.rm = TRUE), bmi)) %>% select(-bmi)
 ```
+
+# Expectation 2
+```{r}
+# Making ever_married and smoking_status factors
+Stroke$ever_married <- factor(Stroke$ever_married)
+Stroke$smoking_status <- factor(Stroke$smoking_status)
+
+# Contingency Table
+con.table <- table(Stroke$ever_married, Stroke$smoking_status)
+
+# Chi-Squared Test
+chisq.test(con.table)
+
+# Probability that marriage and smoking status are independent
+pchisq(599.05, df=3, lower.tail=F)
+
+curve(dchisq(x, df = 3), from = 0, to = 20, main = "Chi-Squared Distribution with df=3")
+curve(dchisq(x, df = 3), from = 0, to = 600, main = "Location of Test Statistic")
+abline(v = 599.05, col='red')
+```
+
 
 
 # Expectation 3
