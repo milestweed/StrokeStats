@@ -8,6 +8,7 @@ output: pdf_document
 ```{r setup, include=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(car)
 ```
 
 ```{r, message=FALSE}
@@ -35,7 +36,87 @@ lm.reduced <- lm(bmi2 ~ age + hypertension + heart_disease + ever_married +
     work_type + avg_glucose_level + smoking_status + stroke, data = Stroke)
 
 summary(lm.reduced)
-```
+
+
+######### INCREMENTAL F-TEST ########################
+
+# All predictors are significant besides smoking status (>2 classes), so we perform an
+# incremental F-test to determine the significance of the smoking status predictor
+
+lm.full <- lm.reduced
+lm.null <- lm(bmi2 ~ age + hypertension + heart_disease + ever_married + 
+    work_type + avg_glucose_level + stroke, data=Stroke)
+anova(lm.null, lm.full)
+
+######################################################
+
+
+####### CHECKING FOR COLLINEAR PREDICTORS #################
+require(car)
+
+vif(lm.reduced)
+
+################################################
+
+
+``` 
+
+</br>
+
+Performing incremental F-test for significance of smoking status indicates that the 
+decrease in model complexity attained by omitting the smoking status predictor does not outweigh the
+reduction in RSS attained by including smoking status, despite the fact that none of the smoking status classes indicate a
+statistically significant relationship. 
+
+Hypothesis Test for Smoking Status as a predictor:
+$$
+H_0: \beta_{NeverSmoked}=\beta_{Smokes}=\beta_{UnknownSmoke}=0
+\\
+H_a: \beta_{NeverSmoked}=\beta_{Smokes}=\beta_{UnknownSmoke} \neq 0
+
+$$
+
+The incremental F-test was also performed to evaluate the significance of the stroke predictor. While this predictor was retained by forward stepwise selection using AIC as the selection criterion, this binary predictor indicates a non-significant relationship in predicting BMI in the presence of the other predictors. The incremental F-test is not necessary for binary predictors, but I decided to test it anyway. 
+
+To test for collinearity among the predictors, we calculated the Variance Inflation Factor for each predictor; this value quantifies the effect of collinearity among predictors on the variance of our regression estimates. Since all of our predictors in the reduced model expressed VIF values below five, we can conclude that collinearity is not a problem for this model. 
+
+
+The R^2 value of 0.23 indicates that approximately 23% of the variance in BMI can be accounted for by our model. 
+
+The RSE value of 6.764 indicates that our model prediction is, on average, around 6-units removed from the true BMI value.
+
+
+Fitted MLR Model Equation:
+
+  - Baseline Job-Type = "children"
+  - Baseline 
+
+$$
+\hat{bmi} = -0.14Age
+\\ + 2.21Hypertension
+\\ - 0.87HeartDisease
+\\
++ 2.05EverMarried
+\\
+- 0.77HadStroke
+\\
++ 0.02AvgGlucoseLevel
+\\
++ 8.36D_{GovtJob} + 5.21D_{NeverWorked} + 8.36D_{PrivateJob} + 7.89D_{SelfEmployed}
+\\
+- 0.37D_{NeverSmoked} - 0.25D_{Smokes} - 0.78D_{UnknownSmoke}
+
+$$
+
+
+</br>
+
+
+
+
+
+
+</br>
 
 
 # Expectation 6
