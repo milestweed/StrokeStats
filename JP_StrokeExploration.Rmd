@@ -106,6 +106,14 @@ $$
 \\
 - 0.37D_{NeverSmoked} - 0.25D_{Smokes} - 0.78D_{UnknownSmoke}
 
+\\
+
+\hat{bmi} = -0.14Age + 2.21Hypertension - 0.87HeartDisease+ 2.05EverMarried- 0.77HadStroke+ 0.02AvgGlucoseLevel 
+\\
++ 8.36D_{GovtJob} + 5.21D_{NeverWorked} + 8.36D_{PrivateJob} + 7.89D_{SelfEmployed} - 0.37D_{NeverSmoked} - 0.25D_{Smokes} - 0.78D_{UnknownSmoke}
+
+
+
 $$
 
 
