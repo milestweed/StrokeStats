@@ -20,41 +20,21 @@ Stroke <- Stroke %>% mutate(bmi2 = ifelse(is.na(bmi), median(bmi, na.rm = TRUE),
 # Expectation 1
 
 ```{r}
-
-Stroke2<-Stroke[,sapply(Stroke, is.numeric)]
-
-Stroke2 <- Stroke2 %>% select(-stroke,-hypertension,-heart_disease)
-
-pairs(Stroke2)
-
-#Stroke$stroke<-as.character(Stroke$stroke)
-#strokev<-c("0"="red", "1"="green")
-
-ggplot(Stroke,aes(x=bmi2, y=avg_glucose_level, colour = factor(stroke))) +
-  geom_point(alpha=.5) +
-  labs(x="BMI", y="Average Glucose Level", title="BMI vs. Glucose Level") +
-  #scale_fill_manual(values=strokev) +
-  scale_color_discrete(name="Stroke", labels=c("No","Yes"))
-
 ggplot(Stroke, aes(x = gender, fill =  gender)) + 
   geom_bar(position = 'dodge') +
   labs(title = "Gender Distribution")
 
 ggplot(Stroke, aes(x = work_type, fill =  gender)) + 
-  geom_bar(position = 'dodge') +
-  labs(title = "Work Type by Gender")
+  geom_bar(position = 'dodge')
 
 ggplot(Stroke, aes(x = Residence_type, fill =  gender)) + 
-  geom_bar(position = 'dodge') +
-  labs(title = "Residence Type by Gender")
+  geom_bar(position = 'dodge')
 
 ggplot(Stroke, aes(x = smoking_status, fill =  gender)) + 
-  geom_bar(position = 'dodge') +
-  labs(title = "Past Smoking Status by Gender")
+  geom_bar(position = 'dodge')
 
 ggplot(Stroke, aes(x = ever_married, fill =  gender)) + 
-  geom_bar(position = 'dodge') +
-  labs(title = "Marriage Status by Gender")
+  geom_bar(position = 'dodge')
 ```
 
 
