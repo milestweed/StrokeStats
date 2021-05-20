@@ -102,8 +102,20 @@ summary(lm.reduced)
 
 # Expectation 4
 ```{r}
+
 plot(lm.reduced,which=1)
 plot(lm.reduced,which=2)
+
+Strokeoutlier <- Stroke[-c(2129, 4209, 929), ]
+
+lm.reduced2 <- lm(bmi2 ~ age + hypertension + heart_disease + ever_married + 
+    work_type + avg_glucose_level + smoking_status + stroke, data = Strokeoutlier)
+
+summary(lm.reduced2)
+
+plot(lm.reduced2,which=1)
+plot(lm.reduced2,which=2)
+
 ```
 
 # Expectation 5
