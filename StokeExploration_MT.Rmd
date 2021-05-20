@@ -108,17 +108,21 @@ summary(lm.outliers)
 
 # Expectation 6
 ```{r}
+library(car)
 glm.obj <- glm(stroke~., Stroke, family='binomial')
 
 glm.null <- glm(stroke~1, Stroke, family = 'binomial')
 
+vif(glm.obj)
+
 # Test of overall model significance
 # Likelihood Ratio Test
 anova(glm.null, glm.obj, test = "LRT")
+Anova(glm.obj)
 ```
 
 ```{r}
-# Forward Stepwise Selection
+# Backwards Stepwise Selection
 step(glm.obj, trace = 0)
 ```
 
@@ -138,11 +142,11 @@ glm.reduced$coefficients
 
 
 ```{r}
-anova(glm.null, glm.reduced, test = "LRT")
 
 #checking for collinearity
 vif(glm.reduced)
 
+anova(glm.null, glm.reduced, test = "LRT")
 
 # Reduced model accuracy
 glm.pred <- predict(glm.reduced, type='response')
@@ -182,64 +186,67 @@ ggplot(Stroke, aes(x = stroke, fill = stroke)) +
   labs(title="Class Distribution") +
   ggsave("classDist.png", width = 100, height = 60, units = 'mm')
 
-## ON A MORE BALANCED DATA SET
-set.seed(42)
-had.stroke <- Stroke %>% 
-  filter(stroke == "Yes") %>% 
-  sample_n(150)
-no.stroke <- Stroke %>% 
-  filter(stroke == "No") %>% 
-  sample_n(150)
+library(ROSE)
 
-red.stroke.df <- had.stroke %>% union(no.stroke)
+Stroke.bal <- ovun.sample(stroke~., data = Stroke)$data
+
+ggplot(Stroke.bal, aes(x = stroke, fill = stroke)) + 
+  geom_bar(position = 'dodge') + 
+  labs(title="Class Distribution") +
+  ggsave("classDistBal.png", width = 100, height = 60, units = 'mm')
 
 
-glm.obj.bal <- glm(stroke~., red.stroke.df, family='binomial')
+glm.obj.bal <- glm(stroke~., Stroke.bal, family='binomial')
 
-glm.null.bal <- glm(stroke~1, red.stroke.df, family = 'binomial')
+glm.null.bal <- glm(stroke~1, Stroke.bal, family = 'binomial')
 
+vif(glm.obj.bal)
 # Test of overall model significance
 # Likelihood Ratio Test
 anova(glm.null.bal, glm.obj.bal, test = "LRT")
 
 # Forward Stepwise Selection
-step(glm.obj.bal, trace = 0)
+step(glm.obj.bal)
 
 # Fit the reduced model
-glm.reduced.bal <- glm(formula = stroke ~ gender + age + avg_glucose_level, family = "binomial", 
-    data = red.stroke.df)
+glm.reduced.bal <-glm(formula = stroke ~ age + hypertension + heart_disease +
+                      work_type + Residence_type + avg_glucose_level +
+                      smoking_status, family = "binomial", data = Stroke.bal)
 
 glm.reduced.bal$coefficients
 ```
+\begin{align*}
+\text{Let }p_i&= p(stroke_i = 1\ |\ age_i,\ hypertension_i,\ heart\_disease_i,\\
+&\ work\_type_i,\ Residence\_type_i,\ avg\_glucose\_level_i,\ smoking\_status_i)
+\end{align*}
+
+$$\left\{\begin{array}{rl}stroke_i&\sim_{indep.}Bin(1,p_i),\\
+\log\left(\frac{p_i}{1-p_i}\right)&=\beta_0 +\beta_1age_i+\beta_2D_{hypertension ,i}+\beta_3D_{heart\_disease,i}\\
+&+\beta_4D_{Govt\_job,i}+\beta_5D_{Never\_worked,i}+\beta_6D_{Private,i}+\beta_7D_{Self-employed,i}\\
+&+\beta_8D_{Urban,i}+\beta_9avg\_glucose\_level_i+\beta_{10}D_{Never\_Smoked,i}\\
+&+\beta_{11}D_{Smokes,i}+\beta_{12}D_{SmokesUNK,i}
+\end{array}\right.$$
 
 \begin{align*}
-\log\left(\frac{p_i}{1-p_i}\right)&=-5.141 -0.441genderMale_i+0.0765age_i+\\
-&0.0068avg\_glucose\_level_i
+\log\left(\frac{\hat{p}_i}{1-\hat{p}_i}\right)&=-4.367 +0.082age+0.29D_{hypertension}+0.22D_{heart\_disease,i}\\
+&-0.92D_{Govt\_job,i}-11.02D_{Never\_worked,i}-1.02D_{Private,i}-1.13D_{Self-employed,i}\\
+&+0.199D_{Urban,i}+0.005avg\_glucose\_level_i-0.29D_{Never\_Smoked,i}\\
+&+0.099D_{Smokes,i}-0.77D_{SmokesUNK,i}
 \end{align*}
 
 ```{r}
-anova(glm.null.bal, glm.reduced.bal, test = "LRT")
-
-#checking for collinearity
 vif(glm.reduced.bal)
 
-glm.pred.bal <- predict(glm.reduced.bal, type='response')
-stroke.pred.bal <- ifelse(glm.pred.bal > 0.50, "Yes","No")
-stroke.labs.bal <- red.stroke.df$stroke
+anova(glm.null.bal, glm.reduced.bal, test = "LRT")
 
-# Confusion matrix
-conf.mat.bal <- table(Pred=stroke.pred.bal, 
-                  True=stroke.labs.bal)
-conf.mat.bal
-
-# Misclassification rate
-mean(stroke.pred.bal != stroke.labs.bal)
+Anova(glm.reduced.bal)
 
 Confint(glm.reduced.bal)
 
-glm.pred.bal <- predict(glm.obj.bal, type='response')
+
+glm.pred.bal <- predict(glm.reduced.bal, type='response')
 stroke.pred.bal <- ifelse(glm.pred.bal > 0.50, "Yes","No")
-stroke.labs.bal <- red.stroke.df$stroke
+stroke.labs.bal <- Stroke.bal$stroke
 
 # Confusion matrix
 conf.mat.bal <- table(Pred=stroke.pred.bal, 
@@ -248,4 +255,5 @@ conf.mat.bal
 
 # Misclassification rate
 mean(stroke.pred.bal != stroke.labs.bal)
+
 ```
