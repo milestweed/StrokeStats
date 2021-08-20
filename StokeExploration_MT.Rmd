@@ -35,8 +35,8 @@ ggplot(Stroke, aes(x = Residence_type, fill =  gender)) +
 ggplot(Stroke, aes(x = smoking_status, fill =  gender)) + 
   geom_bar(position = 'dodge')
 
-ggplot(Stroke, aes(x = ever_married, fill =  gender)) + 
-  geom_bar(position = 'dodge')
+ggplot(Stroke, aes(x = smoking_status, fill =  ever_married)) +
+  geom_bar(position = 'dodge') + ggsave("smokeMarried.png", width=150, height = 100, units = "mm")
 
 ggplot(Stroke, aes(x = stroke, fill = stroke)) + 
   geom_bar(position = 'dodge')
@@ -209,9 +209,7 @@ anova(glm.null.bal, glm.obj.bal, test = "LRT")
 step(glm.obj.bal)
 
 # Fit the reduced model
-glm.reduced.bal <-glm(formula = stroke ~ age + hypertension + heart_disease +
-                      work_type + Residence_type + avg_glucose_level +
-                      smoking_status, family = "binomial", data = Stroke.bal)
+glm.reduced.bal <-glm(formula = stroke ~ age + hypertension + heart_disease +work_type + Residence_type + avg_glucose_level +smoking_status, family = "binomial", data = Stroke.bal)
 
 glm.reduced.bal$coefficients
 ```
@@ -244,9 +242,9 @@ Anova(glm.reduced.bal)
 Confint(glm.reduced.bal)
 
 
-glm.pred.bal <- predict(glm.reduced.bal, type='response')
+glm.pred.bal <- predict(glm.reduced.bal, newdata = Stroke, type='response')
 stroke.pred.bal <- ifelse(glm.pred.bal > 0.50, "Yes","No")
-stroke.labs.bal <- Stroke.bal$stroke
+stroke.labs.bal <- Stroke$stroke
 
 # Confusion matrix
 conf.mat.bal <- table(Pred=stroke.pred.bal, 

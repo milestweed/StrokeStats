@@ -135,6 +135,7 @@ summary(lm.outliers)
 
 # Expectation 6
 ```{r}
+library(car)
 glm.obj <- glm(stroke~., Stroke, family='binomial')
 
 glm.null <- glm(stroke~1, Stroke, family = 'binomial')
@@ -153,6 +154,7 @@ anova(glm.null, glm.reduced, test = "LRT")
 
 #checking for collinearity
 vif(glm.reduced)
+
 
 
 ```
