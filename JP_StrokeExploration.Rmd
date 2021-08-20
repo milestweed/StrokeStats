@@ -28,6 +28,12 @@ head(Stroke)
 ```{r}
 lm.obj <- lm(bmi2~., Stroke)
 
+
+# Check for Collinearity
+vif(lm.obj)
+
+
+
 # summary(lm.obj)
 
 step(lm.obj, trace = 0)
